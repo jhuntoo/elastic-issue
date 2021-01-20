@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elastic-system
+  labels:
+    namespace: elastic-system
+    prometheus-namespace: platform

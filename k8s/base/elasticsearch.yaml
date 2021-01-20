@@ -1,0 +1,115 @@
+---
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: issue-4137-reproduction
+  labels:
+    velero.io/exclude-from-backup: "true"
+spec:
+  version: 7.9.1
+  secureSettings:
+    - secretName: issue-4137-reproduction-gcs-creds
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  nodeSets:
+    - name: master
+      count: 1
+      config:
+        node.master: true
+        node.data: false
+        node.ingest: false
+      podTemplate: &podTemplate
+        metadata:
+          labels:
+            access: public
+        spec:
+          serviceAccount: elasticsearch
+          serviceAccountName: elasticsearch
+          initContainers:
+            - name: sysctl
+              securityContext:
+                privileged: true
+              command:
+                - sh
+                - -c
+                - sysctl -w vm.max_map_count=262144
+            - name: install-plugins
+              command:
+                - sh
+                - -c
+                - |
+                  ./bin/elasticsearch-plugin install --batch repository-gcs mapper-size
+              resources:
+                limits:
+                  memory: 1000Mi
+                requests:
+                  memory: 1000Mi
+          tolerations:
+            - key: app
+              value: elastic
+              operator: Equal
+              effect: NoSchedule
+          containers:
+            - name: elasticsearch
+              env:
+                - name: ES_JAVA_OPTS
+                  value: -Xms1g -Xmx1g
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 2Gi
+                limits:
+                  cpu: 1000m
+                  memory: 2Gi
+          nodeSelector:
+            nodepool: issue-4137-reproduction
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            storageClassName: issue-4137-reproduction-warm
+
+    - name: hot
+      count: 1
+      config:
+        node.master: false
+        node.data: true
+        node.ingest: true
+        node.attr.data: hot
+      podTemplate: *podTemplate
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 60Gi
+            storageClassName: issue-4137-reproduction-hot
+
+    - name: warm
+      count: 1
+      config:
+        node.master: false
+        node.data: true
+        node.ingest: false
+        node.attr.data: warm
+      podTemplate: *podTemplate
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 320Gi
+            storageClassName: issue-4137-reproduction-warm

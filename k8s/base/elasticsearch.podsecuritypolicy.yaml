@@ -1,0 +1,18 @@
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: elasticsearch
+spec:
+  privileged: true
+  hostNetwork: true
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - "*"

@@ -1,0 +1,28 @@
+---
+# hot nodes
+- op: replace
+  path: /spec/nodeSets/1/podTemplate/spec/containers/0/resources/requests/cpu
+  value: 2000m
+- op: replace
+  path: /spec/nodeSets/1/podTemplate/spec/containers/0/resources/limits/cpu
+  value: 4000m
+# warm nodes
+- op: replace
+  path: /spec/nodeSets/2/podTemplate/spec/containers/0/resources/requests/cpu
+  value: 1000m
+- op: replace
+  path: /spec/nodeSets/2/podTemplate/spec/containers/0/resources/limits/cpu
+  value: 3000m
+- op: replace
+  path: /spec/nodeSets/2/podTemplate/spec/containers/0/env/0/value
+  value: -Xms2g -Xmx2g
+- op: replace
+  path: /spec/nodeSets/2/podTemplate/spec/containers/0/resources/requests/memory
+  value: 4Gi
+- op: replace
+  path: /spec/nodeSets/2/podTemplate/spec/containers/0/resources/limits/memory
+  value: 4Gi
+- op: replace
+  path: /spec/nodeSets/2/volumeClaimTemplates/0/spec/resources/requests/storage
+  value: 640Gi
+

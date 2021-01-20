@@ -1,0 +1,19 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: issue-4137-reproduction-hot
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+allowVolumeExpansion: true
+
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: issue-4137-reproduction-warm
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+allowVolumeExpansion: true

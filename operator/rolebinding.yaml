@@ -1,0 +1,29 @@
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp:restrictive:default
+  namespace: elastic-system
+subjects:
+- kind: Group
+  name: system:serviceaccounts
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: psp:restrictive
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:elasticsearch
+  namespace: elastic-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:elasticsearch
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: elastic-system

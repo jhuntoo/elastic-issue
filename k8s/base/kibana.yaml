@@ -1,0 +1,42 @@
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: issue-4137-reproduction
+  labels:
+    velero.io/exclude-from-backup: "true"
+spec:
+  version: 7.9.1
+  count: 1
+  elasticsearchRef:
+    name: issue-4137-reproduction
+  config:
+    server:
+      maxPayloadBytes: 8388608
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  podTemplate:
+    metadata:
+      labels:
+        access: public
+    spec:
+      serviceAccount: elasticsearch
+      serviceAccountName: elasticsearch
+      tolerations:
+        - key: app
+          value: elastic
+          operator: Equal
+          effect: NoSchedule
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+      nodeSelector:
+        nodepool: issue-4137-reproduction
