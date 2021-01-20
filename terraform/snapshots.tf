@@ -31,7 +31,6 @@ resource "kubernetes_secret" "issue-4137-reproduction-gcs-creds" {
   }
 
   data = {
-//    "gcs.client.default.credentials_file" = base64decode(google_service_account_key.issue-4137-reproduction.private_key)
-    "gcs.client.default.credentials_file" = "dummy"
+    "gcs.client.default.credentials_file" = base64decode(google_service_account_key.issue-4137-reproduction.private_key)
   }
 }

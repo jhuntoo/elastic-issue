@@ -7,7 +7,7 @@ terraform: 0.13.3
 
 ### Prerequisites
 - a GKE cluster
-- the ECK operator 1.2.0 must be installed in the elastic-system namespace (our config is [/operator](operator) for reference)
+- the ECK operator 1.2.0 must be installed in the elastic-system namespace (our config is in [/operator](operator) for reference)
 
 ### 1. Build infra
 - nodepool
@@ -43,19 +43,10 @@ This should succeed, and you should see
 ### 4. Create an invalid  service account key value
 In [./terraform/snapshots.tf](./terraform/snapshots.tf), modify `gcs.client.default.credentials_file` in the resource `resource "kubernetes_secret" "issue-4137-reproduction-gcs-creds` to something obviously invalid
 
-Run terraform plan/apply again
-```bash
-./register_snapshot_repo.sh
-```
-
-This should succeed, and you should see
-`{"acknowledged":true}`
-
 ### 5. Register the snapshot repo again (without reloading)
 You may need to stop and rerun the port forwarding command, I did.
 `./register_snapshot_repo.sh`
-This should succeed as the secure setting has not been refreshed
-
+This should succeed as the secure setting has not been reloaded
 
 ### 6. Reload secure settings and Register the snapshot repo again
 ```bash
