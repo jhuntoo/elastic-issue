@@ -42,7 +42,7 @@ This should succeed, and you should see
 `{"acknowledged":true}`
 
 ### 4. Create an invalid  service account key value
-In [./terraform/snapshots.tf](./terraform/snapshots.tf), modify `gcs.client.default.credentials_file` in the resource `resource "kubernetes_secret" "issue-4137-reproduction-gcs-creds` to something obviously invalid
+In [./terraform/snapshots.tf](./terraform/snapshots.tf), modify `gcs.client.default.credentials_file` in the resource `resource "kubernetes_secret" "issue-4137-reproduction-gcs-creds` to something obviously invalid, like changing the `client_email` to something that does exist.
 
 ### 5. Register the snapshot repo again (without reloading)
 You may need to stop and rerun the port forwarding command, I did.
