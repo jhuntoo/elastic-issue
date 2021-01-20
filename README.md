@@ -34,6 +34,7 @@ kustomize build k8s/dev | kubectl apply -f -
 
 ### 3. Register snapshot repo
 ```bash
+kubectl port-forward -n issue-4137-reproduction svc/issue-4137-reproduction-es-http 9200
 ./register_snapshot_repo.sh
 ```
 
